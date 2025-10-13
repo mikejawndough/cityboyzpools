@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>City Boyz Pool Cleaning • Yuma, AZ</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Weekly pool service, green-to-clean, and emergency cleanups in Yuma, Arizona." />
+</head>
+<body>
+  <header class="site-header">
+    <div class="navbar">
+      <!-- ✅ Logo and brand grouped together -->
+      <a href="index.html" class="brand">
+        <img src="./images/logo.png" alt="City Boyz Pool Cleaning Logo">
+        <span>City Boyz Pool Cleaning</span>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav>
+        <a data-nav href="index.html">Home</a>
+        <a data-nav href="services.html">Services</a>
+        <a data-nav href="booking.html">Book</a>
+        <a data-nav href="apply.html">Apply</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Pool Game Strong</h1>
+    <p>Weekly cleans, deep fixes, and that City Boyz touch - always on time, always spotless</p>
+    <a class="btn" href="booking.html">Book an Appointment</a>
+  </section>
+
+  <main class="container">
+    <div class="grid grid-cols-3">
+      <div class="card">
+        <h3>Weekly Service <span class="badge">3-week min.</span></h3>
+        <p>Skimming, brushing, vacuuming, basket cleaning, filter check/backwash, and full water chemistry balance.</p>
+        <a class="btn" href="services.html">See Plans</a>
+      </div>
+      <div class="card">
+        <h3>Green-to-Clean</h3>
+        <p>From swamp to swim-ready. Deep algae remediation and follow-ups until it’s clear and balanced.</p>
+        <a class="btn" href="services.html#green">Learn More</a>
+      </div>
+      <div class="card">
+        <h3>Emergency Visits</h3>
+        <p>Same- or next-day heavy debris removal, chemistry reset, and equipment check.</p>
+        <a class="btn" href="services.html#emergency">Pricing</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    © <span id="year"></span> City Boyz Pool Cleaning • Yuma, AZ ·
+    <a href="mailto:cityboyzpools@gmail.com">cityboyzpools@gmail.com</a>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+</body>
+</html>
