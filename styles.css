@@ -230,3 +230,7 @@ small.help {
 .site-footer a:hover {
   text-decoration: underline;
 }
+/* Temporarily hide Book button */
+.navbar a[href="booking.html"] {
+  display: none;
+}
