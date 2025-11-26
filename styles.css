@@ -69,6 +69,11 @@ body {
   color: var(--white);
 }
 
+/* Temporarily hide Book button */
+.navbar nav a[href="booking.html"] {
+  display: none !important;
+}
+
 /* ---------- Layout ---------- */
 .container {
   max-width: 1100px;
@@ -229,8 +234,4 @@ small.help {
 }
 .site-footer a:hover {
   text-decoration: underline;
-}
-/* Temporarily hide Book button */
-.navbar a[href="booking.html"] {
-  display: none;
 }
