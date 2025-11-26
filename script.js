@@ -18,7 +18,7 @@
   
   document.addEventListener('keydown', function(e) {
     // Check for Ctrl+Shift+A (or Cmd+Shift+A on Mac)
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
       e.preventDefault();
       
       if (adminButtonAdded) return; // Already added
