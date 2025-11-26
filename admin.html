@@ -76,12 +76,11 @@
   <header class="site-header">
     <div class="navbar">
       <a href="index.html" class="brand">
-        <img src="images/logo.png" alt="City Boyz Logo" />
+        <img src="images/logo.png" alt="City Boyz Logo" onerror="this.style.display='none'" />
         <span>City Boyz Pool Cleaning</span>
       </a>
       <nav>
         <a data-nav href="index.html">Home</a>
-        <a data-nav href="services.html">Services</a>
         <a data-nav href="apply.html">Apply</a>
       </nav>
     </div>
@@ -176,9 +175,22 @@
       }
     };
 
+    // Whitelist of allowed admin emails
+    const allowedEmails = [
+      "cityboyzpools@gmail.com",  // Replace with your email
+      "mikejawndough@gmail.com"  // Add more emails as needed
+    ];
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in
+        // Check if user's email is in the whitelist
+        if (!allowedEmails.includes(user.email)) {
+          alert("Access denied. Your email is not authorized to access this dashboard.");
+          signOut(auth);
+          return;
+        }
+
+        // User is signed in and authorized
         signinBtn.style.display = "none";
         signoutBtn.style.display = "inline-block";
         loadingIndicator.style.display = "block";
