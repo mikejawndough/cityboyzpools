@@ -1,86 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>CityBoyz Pool Cleaning – Coming Soon</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Now Hiring • City Boyz Pool Cleaning</title>
+<link rel="stylesheet" href="styles.css" />
+
 <style>
-:root{--knicks-blue:#1D428A;--knicks-orange:#F58426;--white:#fff}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
-  /* pool water image with brand-color overlay for readability */
-  background:
-    linear-gradient(135deg, rgba(29,66,138,.55), rgba(245,132,38,.35)),
-    url('images/pool-hero.jpg') center/cover no-repeat fixed;
-  color:var(--white)
+/* Page-specific styling for the hiring spotlight */
+.hiring-hero {
+  background: linear-gradient(135deg, var(--knicks-blue), var(--knicks-orange));
+  color: var(--white);
+  text-align: center;
+  padding: 90px 20px;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.card{
-  background:rgba(255,255,255,.12);backdrop-filter:blur(6px);
-  padding:40px 28px;border-radius:18px;max-width:560px;width:92%;
-  box-shadow:0 4px 12px rgba(0,0,0,.25)
+
+.hiring-card {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(6px);
+  padding: 40px 30px;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 92%;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
-h1{margin:0 0 12px;font-size:clamp(32px,5vw,48px);letter-spacing:1px}
-p{margin:0 0 22px;opacity:.98;font-size:18px;line-height:1.5}
 
-/* countdown */
-.countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 6px}
-.tile{background:rgba(0,0,0,.28);border-radius:12px;padding:14px 8px}
-.num{font-size:clamp(28px,4.2vw,36px);font-weight:900}
-.label{font-size:12px;opacity:.9;text-transform:uppercase}
-.sub{margin-top:4px;font-size:14px;opacity:.95}
+.hiring-card h1 {
+  font-size: clamp(34px, 6vw, 52px);
+  margin-bottom: 12px;
+  font-weight: 900;
+}
 
-/* social */
-.social{display:flex;justify-content:center;gap:20px;margin-top:22px}
-.social a{color:var(--white);font-size:28px;text-decoration:none;transition:.25s}
-.social a:hover{color:var(--knicks-orange);transform:scale(1.15)}
-small{display:block;margin-top:18px;opacity:.9;font-size:14px}
+.hiring-card p {
+  font-size: 18px;
+  opacity: 0.95;
+  margin-bottom: 26px;
+}
+
+.hiring-btn {
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: 14px;
+  background: var(--knicks-orange);
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 20px;
+  transition: 0.25s;
+}
+
+.hiring-btn:hover {
+  background: var(--white);
+  color: var(--knicks-blue);
+  box-shadow: 0 0 12px rgba(255,255,255,0.4);
+}
 </style>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
-<div class="card">
-  <h1>Coming Soon</h1>
-  <p>We’re getting CityBoyz Pool Cleaning Yuma ready!</p>
-
-  <!-- countdown -->
-  <div id="countdown">
-    <div class="countdown">
-      <div class="tile"><div class="num" id="dd">--</div><div class="label">Days</div></div>
-      <div class="tile"><div class="num" id="hh">--</div><div class="label">Hours</div></div>
-      <div class="tile"><div class="num" id="mm">--</div><div class="label">Minutes</div></div>
-      <div class="tile"><div class="num" id="ss">--</div><div class="label">Seconds</div></div>
-    </div>
-    <div class="sub">Countdown to <strong>Opening Day!</strong></div>
+<header class="site-header">
+  <div class="navbar">
+    <a href="index.html" class="brand">
+      <img src="./images/logo.png" alt="City Boyz Pool Cleaning Logo">
+      <span>City Boyz Pool Cleaning</span>
+    </a>
+    <nav>
+      <a data-nav href="index.html">Home</a>
+      <a data-nav href="services.html">Services</a>
+      <a data-nav href="booking.html">Book</a>
+      <a data-nav href="apply.html">Apply</a>
+    </nav>
   </div>
+</header>
 
-  <!-- social -->
-  <div class="social">
-    <a href="https://www.instagram.com/cityboyzpools" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.facebook.com/cityboyzpools" target="_blank"><i class="fab fa-facebook"></i></a>
+<section class="hiring-hero">
+  <div class="hiring-card">
+    <h1>🚨 We're Hiring!</h1>
+    <p>City Boyz Pool Cleaning is expanding in Yuma — and we’re looking for reliable, motivated people to join our team.</p>
+    <a class="hiring-btn" href="apply.html">Apply Now</a>
+    <p style="margin-top:20px; font-size:15px; opacity:0.85;">
+      Full-time & part-time positions available. No experience required.
+    </p>
   </div>
-  <small>© 2025 CityBoyz Pool Cleaning Yuma • All Rights Reserved</small>
-</div>
+</section>
 
-<script>
-const target=new Date('2025-11-15T00:00:00-07:00').getTime();
-const d=document;
-function pad(n){return n.toString().padStart(2,'0')}
-function tick(){
-  const now=Date.now();let diff=target-now;
-  if(diff<=0){d.getElementById('countdown').innerHTML='<h2>We’re Open! 🎉</h2>';return}
-  const days=Math.floor(diff/86400000);diff-=days*86400000;
-  const hrs=Math.floor(diff/3600000);diff-=hrs*3600000;
-  const mins=Math.floor(diff/60000);diff-=mins*60000;
-  const secs=Math.floor(diff/1000);
-  d.getElementById('dd').textContent=days;
-  d.getElementById('hh').textContent=pad(hrs);
-  d.getElementById('mm').textContent=pad(mins);
-  d.getElementById('ss').textContent=pad(secs);
-}
-tick();setInterval(tick,1000);
-</script>
+<footer class="site-footer">
+  © <span id="year"></span> City Boyz Pool Cleaning • Yuma, AZ ·
+  <a href="mailto:cityboyzpools@gmail.com">cityboyzpools@gmail.com</a>
+</footer>
+
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent=new Date().getFullYear()</script>
 </body>
 </html>

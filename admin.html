@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CityBoyz — Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .admin-wrap {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    .table th,
+    .table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+    }
+    .table tr:hover {
+      background-color: #f9f9f9;
+    }
+    .table td {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      font-size: 14px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #loading-indicator {
+      padding: 20px;
+      text-align: center;
+      color: #666;
+    }
+    .applicant-count {
+      margin: 20px 0;
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="navbar">
+      <a href="index.html" class="brand">
+        <img src="./images/logo.png" alt="City Boyz Logo" />
+        <span>City Boyz Pool Cleaning</span>
+      </a>
+      <nav>
+        <a data-nav href="index.html">Home</a>
+        <a data-nav href="apply.html">Apply</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-wrap">
+    <h2>Applicants Dashboard</h2>
+    
+    <div>
+      <button id="signin" class="btn">Sign in with Google</button>
+      <button id="signout" class="btn" style="display:none;">Sign out</button>
+    </div>
+
+    <div id="loading-indicator" style="display:none;">
+      Loading applications...
+    </div>
+
+    <div id="app-list" style="display:none;">
+      <p id="applicant-count" class="applicant-count"></p>
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Submitted</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>City</th>
+              <th>Experience</th>
+              <th>Certs</th>
+              <th>Availability</th>
+              <th>Pay Rate</th>
+              <th>License</th>
+              <th>Vehicle</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="apps"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import {
+      getFirestore, collection, query, orderBy, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeQqKsaXLvrFLhVWsCpZIx0BNYL-VMkd8",
+      authDomain: "cityboyz-employee-database.firebaseapp.com",
+      projectId: "cityboyz-employee-database",
+      storageBucket: "cityboyz-employee-database.firebasestorage.app",
+      messagingSenderId: "130444616088",
+      appId: "1:130444616088:web:fd9564b30c580672434bed",
+      measurementId: "G-MSCRYW8462"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const signinBtn = document.getElementById("signin");
+    const signoutBtn = document.getElementById("signout");
+    const appList = document.getElementById("app-list");
+    const loadingIndicator = document.getElementById("loading-indicator");
+    const tbody = document.getElementById("apps");
+    const countEl = document.getElementById("applicant-count");
+
+    signinBtn.onclick = () => {
+      signinBtn.disabled = true;
+      signinBtn.textContent = "Signing in...";
+      signInWithPopup(auth, provider)
+        .catch((error) => {
+          console.error("Sign in error:", error);
+          alert("Sign in failed: " + error.message);
+        })
+        .finally(() => {
+          signinBtn.disabled = false;
+          signinBtn.textContent = "Sign in with Google";
+        });
+    };
+
+    signoutBtn.onclick = () => {
+      if (confirm("Are you sure you want to sign out?")) {
+        signOut(auth);
+      }
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        signinBtn.style.display = "none";
+        signoutBtn.style.display = "inline-block";
+        loadingIndicator.style.display = "block";
+        appList.style.display = "none";
+
+        const q = query(collection(db, "applications"), orderBy("createdAt", "desc"));
+        
+        onSnapshot(q, (snap) => {
+          tbody.innerHTML = "";
+          loadingIndicator.style.display = "none";
+          appList.style.display = "block";
+          countEl.textContent = `Total Applications: ${snap.size}`;
+
+          if (snap.size === 0) {
+            tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:40px; color:#999;">No applications yet</td></tr>';
+            return;
+          }
+
+          snap.forEach((doc) => {
+            const d = doc.data();
+            const when = d.createdAt?.toDate
+              ? d.createdAt.toDate().toLocaleString()
+              : "—";
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${when}</td>
+              <td>${d.fullName || "—"}</td>
+              <td><a href="mailto:${d.email || ''}">${d.email || "—"}</a></td>
+              <td><a href="tel:${d.phone || ''}">${d.phone || "—"}</a></td>
+              <td>${d.city || "—"}</td>
+              <td>${d.experience || "—"}</td>
+              <td>${d.certs || "—"}</td>
+              <td>${d.availability || "—"}</td>
+              <td>${d.pay ? '$' + d.pay : "—"}</td>
+              <td>${d.license || "—"}</td>
+              <td>${d.vehicle || "—"}</td>
+              <td title="${d.notes || ''}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">${d.notes || "—"}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        }, (error) => {
+          console.error("Error fetching applications:", error);
+          loadingIndicator.style.display = "none";
+          alert("Error loading applications: " + error.message);
+        });
+      } else {
+        // User is signed out
+        signinBtn.style.display = "inline-block";
+        signoutBtn.style.display = "none";
+        appList.style.display = "none";
+        loadingIndicator.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -22,9 +22,18 @@
 
 <main class="container">
   <h1 class="section-title">Employment Application</h1>
+  
+  <div class="card" style="background-color: #e7f3ff; border-left: 4px solid #007bff; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; color: #007bff;">Position Details</h3>
+    <p style="margin-bottom: 0;">
+      <strong>This is a per diem position.</strong> You will be added to our call list and contacted as work becomes available. 
+      Work schedules vary based on customer needs and seasonal demand. Flexibility and availability are essential.
+    </p>
+  </div>
+
   <div id="apply-success" aria-live="polite" style="margin-bottom:12px"></div>
 
-<form class="card" onsubmit="handleApplicationSubmit(event)" enctype="multipart/form-data">
+  <form id="applicationForm" class="card">
     <div class="form-row">
       <div>
         <label for="fullName">Full Name *</label>
@@ -42,15 +51,16 @@
         <input id="phone" name="phone" type="tel" required />
       </div>
       <div>
-        <label for="city">City</label>
-        <input id="city" name="city" />
+        <label for="city">City *</label>
+        <input id="city" name="city" required />
       </div>
     </div>
 
     <div class="form-row">
       <div>
-        <label for="experience">Pool Service Experience</label>
-        <select id="experience" name="experience">
+        <label for="experience">Pool Service Experience *</label>
+        <select id="experience" name="experience" required>
+          <option value="">Select…</option>
           <option value="none">None</option>
           <option value="0-1">0–1 years</option>
           <option value="1-3">1–3 years</option>
@@ -69,40 +79,36 @@
         <input id="availability" name="availability" placeholder="Days & times" required />
       </div>
       <div>
-        <label for="pay">Desired Hourly Rate</label>
-        <input id="pay" name="pay" type="number" min="0" step="0.25" />
+        <label for="pay">Desired Hourly Rate *</label>
+        <input id="pay" name="pay" type="number" min="0" step="0.25" placeholder="e.g., 18.50" required />
       </div>
     </div>
 
     <div class="form-row">
       <div>
-        <label>Driver’s License *</label>
-        <select name="license" required>
+        <label for="license">Driver's License *</label>
+        <select id="license" name="license" required>
           <option value="">Select…</option>
-          <option>Yes</option>
-          <option>No</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
         </select>
       </div>
       <div>
-        <label>Reliable Vehicle *</label>
-        <select name="vehicle" required>
+        <label for="vehicle">Reliable Vehicle *</label>
+        <select id="vehicle" name="vehicle" required>
           <option value="">Select…</option>
-          <option>Yes</option>
-          <option>No</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
         </select>
       </div>
     </div>
 
-    <label for="notes">Anything else we should know?</label>
-    <textarea id="notes" name="notes" rows="4" placeholder="Tell us briefly about yourself"></textarea>
+    <label for="notes">Anything else we should know? *</label>
+    <textarea id="notes" name="notes" rows="4" placeholder="Tell us briefly about yourself" required></textarea>
 
-    <label for="resume">Upload Your Resume (PDF or DOCX)</label>
-<input id="resume" name="resume" type="file" accept=".pdf,.doc,.docx" />
-<small class="help">This file will be sent when we connect your form to Firebase or email.</small>
+    <p style="margin-top: 20px;"><small class="help">Note: Please be prepared to email your resume after applying or bring it to your interview.</small></p>
 
-    <p><small class="help">This demo form stores entries in your browser only. We’ll wire it to your preferred system next.</small></p>
-
-    <button class="btn" type="submit">Submit Application</button>
+    <button class="btn" type="submit" id="submitBtn">Submit Application</button>
   </form>
 </main>
 
@@ -110,6 +116,87 @@
   Thanks for your interest in City Boyz Pool Cleaning!
 </footer>
 
-<script src="script.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeQqKsaXLvrFLhVWsCpZIx0BNYL-VMkd8",
+    authDomain: "cityboyz-employee-database.firebaseapp.com",
+    projectId: "cityboyz-employee-database",
+    storageBucket: "cityboyz-employee-database.firebasestorage.app",
+    messagingSenderId: "130444616088",
+    appId: "1:130444616088:web:fd9564b30c580672434bed",
+    measurementId: "G-MSCRYW8462"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const form = document.getElementById('applicationForm');
+  const statusOut = document.getElementById('apply-success');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    statusOut.textContent = '';
+    statusOut.className = '';
+
+    const formData = new FormData(form);
+
+    try {
+      // Prepare data object
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+
+      // Add to Firestore
+      await addDoc(collection(db, "applications"), {
+        ...data,
+        status: "new",
+        createdAt: serverTimestamp()
+      });
+
+      // Success!
+      statusOut.textContent = "✓ Application submitted successfully! Thank you — we'll be in touch soon.";
+      statusOut.style.backgroundColor = '#d4edda';
+      statusOut.style.borderColor = '#c3e6cb';
+      statusOut.style.color = '#155724';
+      statusOut.style.padding = '12px';
+      statusOut.style.borderRadius = '4px';
+      statusOut.style.border = '1px solid';
+      
+      form.reset();
+      
+      // Scroll to success message
+      statusOut.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+    } catch (err) {
+      console.error('Submission error:', err);
+      statusOut.textContent = "Error submitting application: " + err.message;
+      statusOut.style.backgroundColor = '#f8d7da';
+      statusOut.style.borderColor = '#f5c6cb';
+      statusOut.style.color = '#721c24';
+      statusOut.style.padding = '12px';
+      statusOut.style.borderRadius = '4px';
+      statusOut.style.border = '1px solid';
+    } finally {
+      // Re-enable submit button
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Application';
+    }
+  });
+</script>
+
 </body>
 </html>
