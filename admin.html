@@ -130,7 +130,7 @@
       getFirestore, collection, query, orderBy, onSnapshot
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
     import {
-      getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged
+      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -158,22 +158,16 @@
     signinBtn.onclick = () => {
       signinBtn.disabled = true;
       signinBtn.textContent = "Signing in...";
-      signInWithRedirect(auth, provider);
+      signInWithPopup(auth, provider)
+        .catch((error) => {
+          console.error("Sign in error:", error);
+          alert("Sign in failed: " + error.message);
+        })
+        .finally(() => {
+          signinBtn.disabled = false;
+          signinBtn.textContent = "Sign in with Google";
+        });
     };
-
-    // Check for redirect result on page load
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result && result.user) {
-          console.log("Signed in successfully:", result.user.email);
-        }
-      })
-      .catch((error) => {
-        console.error("Sign in error:", error);
-        alert("Sign in failed: " + error.message);
-        signinBtn.disabled = false;
-        signinBtn.textContent = "Sign in with Google";
-      });
 
     signoutBtn.onclick = () => {
       if (confirm("Are you sure you want to sign out?")) {
@@ -183,8 +177,8 @@
 
     // Whitelist of allowed admin emails
     const allowedEmails = [
-      "your-email@gmail.com",  // Replace with your email
-      "another-admin@gmail.com"  // Add more emails as needed
+      "cityboyzpools@gmail.com",  // Replace with your email
+      "mikejawndough@gmail.com"  // Add more emails as needed
     ];
 
     onAuthStateChanged(auth, (user) => {
